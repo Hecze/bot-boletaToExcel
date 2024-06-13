@@ -1,8 +1,4 @@
 import { addKeyword, EVENTS } from "@builderbot/bot";
-import { clearHistory } from "../utils/handleHistory";
-import { format } from "date-fns";
-import { appToCalendar } from "src/services/calendar";
-import { flowSchedule } from "./schedule.flow";
 import { flowFirstStep } from "./firstStep.flow";
 import { Zzz } from "../utils/Zzz";
 

@@ -1,13 +1,9 @@
 import { addKeyword, EVENTS } from "@builderbot/bot";
 import { clearHistory, handleHistory } from "../utils/handleHistory";
-import { format } from "date-fns";
-import { appToCalendar } from "src/services/calendar";
-import { flowSchedule } from "./schedule.flow";
-import { provider } from "src/provider";
+import { flowImageToExcel } from "./imageToExcel.flow";
 import { ImageToText } from "src/utils/ImageToText";
 import { stringToExcel } from "src/utils/stringToExcel";
 import path from 'path'
-import { Zzz } from "src/utils/Zzz";
 import fs from 'fs';
 
 
@@ -29,12 +25,12 @@ const flowFirstStep = addKeyword(EVENTS.MEDIA).addAction(async (ctx, { flowDynam
         return endFlow(`chatbot apagado`)
     }
     try {
+        await flowDynamic("procesando...");
         const localPath = await provider.saveFile(ctx, { path: './src/cache/boletas' });
         console.log("imagen guardada en:" + localPath)
         const imagePath = localPath;
         const message = await ImageToText(imagePath);
 
-        await flowDynamic("procesando...");
 
         const excelFileName = await stringToExcel(message) || 'boleta.xlsx';
 
@@ -54,7 +50,7 @@ const flowFirstStep = addKeyword(EVENTS.MEDIA).addAction(async (ctx, { flowDynam
             console.log("Error al enviar el archivo: " + error)
         }
 
-        return gotoFlow(flowSchedule)
+        return gotoFlow(flowImageToExcel)
 
 
     } catch (error) {
