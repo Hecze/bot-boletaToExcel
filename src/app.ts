@@ -31,7 +31,7 @@ app.post("/blacklist/add", async (req, res) => {
       console.log("Added number to blacklist:", number);
       res.json({ number, added: true, result });
     } catch (error) {
-      res.status(500).send(error.message);
+      res.status(500).send("Error al agregar" + error.message);
     }
   });
   
@@ -53,7 +53,7 @@ app.post("/blacklist/add", async (req, res) => {
       const list = await bot.dynamicBlacklist.getList();
       res.json(list);
     } catch (error) {
-      res.status(500).send(error.message);
+      res.status(500).send("Error al obtener la getlist: " + error.message);
     }
   });
   
@@ -62,9 +62,11 @@ app.post("/blacklist/add", async (req, res) => {
     try {
       const { number } = req.body;
       const result = bot.dynamicBlacklist.checkIf(number);
+      console.log("Checked if number is blacklisted: ", number, " = " ,result);
+
       res.json({ number, isBlacklisted: result });
     } catch (error) {
-      res.status(500).send(error.message);
+      res.status(500).send("Error post/check: " +  error.message);
     }
   });
 
@@ -74,6 +76,7 @@ app.post("/blacklist/add", async (req, res) => {
   app.listen(4000, () => {
     console.log(`HTTP server listening on http://localhost:${4000}`);
   });
+  
 }
 
 main();

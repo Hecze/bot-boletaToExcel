@@ -13,32 +13,24 @@ const DURATION_MEET = process.env.DURATION_MEET ?? 45
 const flowConfirmStart = addKeyword(EVENTS.ACTION).addAction(async (ctx, { flowDynamic, gotoFlow, endFlow }) => {
     const number = ctx.from;
     const Veryfied = await Zzz(number, "POST", "check");
-    if (Veryfied.isBlacklisted) return
-    await flowDynamic('Hola, ahora mismo estoy manejando pero puedo agendar tu viaje automaticamente');
-    await flowDynamic('*Agendar* o *Esperar al humano*');
+    if (!Veryfied.isBlacklisted) {
+        await flowDynamic('Hola, ¿Deseas insertar la imagen de tu boleta?');
+        await flowDynamic('*Insertar* o *Apagar* chatbot');
+    }
+
 }).addAction({ capture: true }, async (ctx, { state, flowDynamic, endFlow, gotoFlow }) => {
     const number = ctx.from;
 
-    if (ctx.body.toLocaleLowerCase().includes('agendar')) {
+    if (ctx.body.toLocaleLowerCase().includes('insertar') || ctx.body.toLocaleLowerCase().includes('encender') || ctx.body.toLocaleLowerCase().includes('activar')) {
         const remove = await Zzz(number, "POST", "remove");
         return gotoFlow(flowFirstStep)
     }
 
-    if (ctx.body.toLocaleLowerCase().includes('esperar')) {
+    if (ctx.body.toLocaleLowerCase().includes('apagar') || ctx.body.toLocaleLowerCase() === 'no') {
         const Blocked = await Zzz(number, "POST", "add");
 
-        if (Blocked.added) {
-            async function ejecutarEndFlow() {
-                await clearHistory(state)
-                return endFlow(`Vale, te escribiré a la brevedad`);
-            }
-             
-            await ejecutarEndFlow();
-        }
+        if (Blocked.added) endFlow(`Chatbot desactivado`);
     }
-
-
-
 
 })
 
