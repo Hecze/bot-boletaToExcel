@@ -16,7 +16,7 @@ const flowFirstStep = addKeyword(EVENTS.MEDIA).addAction(async (ctx, { flowDynam
         await flowDynamic(m)
         handleHistory({ content: m, role: "assistant" }, state);
 
-}).addAction({ capture: true }, async (ctx, { provider, state, flowDynamic,  gotoFlow }) => {
+}).addAction({ capture: true }, async (ctx, { provider, state, flowDynamic,  gotoFlow, fallBack }) => {
 
     if (ctx.body.toLocaleLowerCase().includes('cancelar') || ctx.body.toLocaleLowerCase().includes('apagar') || ctx.body.toLocaleLowerCase().includes('salir')) {
         await clearHistory(state)
@@ -55,7 +55,8 @@ const flowFirstStep = addKeyword(EVENTS.MEDIA).addAction(async (ctx, { flowDynam
 
     } catch (error) {
         console.log("firstStep: " + error)
-
+        await flowDynamic("Error al procesar la imagen");
+        return fallBack("vuelva a intentar");
     }
 
 
