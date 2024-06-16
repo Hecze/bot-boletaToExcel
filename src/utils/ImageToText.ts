@@ -1,6 +1,3 @@
-import { format } from 'date-fns';
-import { es } from 'date-fns/locale';
-import axios from "axios";
 import { createWorker } from 'tesseract.js';
 
 async function ImageToText(img: string) {

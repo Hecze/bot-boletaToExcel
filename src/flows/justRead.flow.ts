@@ -1,33 +1,16 @@
 import { addKeyword, EVENTS } from "@builderbot/bot";
-import { clearHistory, handleHistory } from "../utils/handleHistory";
-import { flowImageToExcel } from "./imageToExcel.flow";
-import { ImageToText } from "src/utils/ImageToText";
-import { stringToExcel } from "src/utils/stringToExcel";
-import path from 'path'
-import fs from 'fs';
-import { flowConfirmStart } from "./confirmStart.flow";
 
-
-
-
-const DURATION_MEET = process.env.DURATION_MEET ?? 45
-/**
- * Encargado de pedir los datos necesarios para registrar el evento en el calendario
- */
-const flowJustRead = addKeyword(EVENTS.ACTION).addAction(async (ctx, { flowDynamic, gotoFlow, endFlow, state }) => {
-
-}).addAction({ capture: true }, async (ctx, { provider, state, flowDynamic, endFlow, gotoFlow }) => {
-    const number = ctx.from;
+const flowJustRead = addKeyword(EVENTS.ACTION).addAction(async () => {
+        //no escribimos nada, pasamos defrente a leer el mensaje en el Action
+}).addAction({ capture: true }, async (ctx, { endFlow, gotoFlow }) => {
+    
+    //si escribimos insertar o encender activamos el chatbot redirigiendo al flujo principal
     if (ctx.body.toLocaleLowerCase().includes('insertar') || ctx.body.toLocaleLowerCase().includes('encender') || ctx.body.toLocaleLowerCase().includes('activar')) {
         console.log("el usuario intenta activar el chatbot")
         return endFlow(`Chatbot activado`);
     }
-
+    //si no escribes insertar o encender nos mantenemos en el flujo
     return gotoFlow(flowJustRead)
-
-
-
-
 })
 
 

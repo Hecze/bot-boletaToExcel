@@ -1,12 +1,8 @@
-import { format } from 'date-fns';
-import { es } from 'date-fns/locale';
-import axios from "axios";
 import fs from 'fs';
 import xlsx from 'xlsx';
 import path from 'path';
 import { fileURLToPath } from 'url';
 
-import { createWorker } from 'tesseract.js';
 
 async function stringToExcel(message: string): Promise<string | void> {
   try {
@@ -21,7 +17,7 @@ async function stringToExcel(message: string): Promise<string | void> {
 
     // Obtener la fecha actual en el formato deseado
     const now = new Date();
-    const formattedDate = now.toISOString().replace(/[-T:\.Z]/g, '').slice(0, 15);
+    const formattedDate = now.toISOString().replace(/[-T:.Z]/g, '').slice(0, 15);
 
     // Crear el nombre del archivo con la fecha actual
     const fileName = `message_${formattedDate}.xlsx`;

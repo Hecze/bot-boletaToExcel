@@ -1,16 +1,15 @@
 import { addKeyword, EVENTS } from "@builderbot/bot";
-import { clearHistory, getHistoryParse, handleHistory } from "../utils/handleHistory";
+import { clearHistory } from "../utils/handleHistory";
 import { flowFirstStep } from "./firstStep.flow";
 import { flowJustRead } from "./justRead.flow";
 
 
 
-const flowImageToExcel = addKeyword(EVENTS.ACTION).addAction(async (ctx, { extensions, state, flowDynamic, endFlow, gotoFlow }) => {
+const flowImageToExcel = addKeyword(EVENTS.ACTION).addAction(async (ctx, {  flowDynamic}) => {
 
     await flowDynamic('*Continuar* enviando o *apagar* chatbot?');
 
 }).addAction({ capture: true }, async (ctx, { gotoFlow, flowDynamic, state, endFlow }) => {
-    const number = ctx.from;
 
     if (ctx.body.toLocaleLowerCase().includes('continuar')) {
         return gotoFlow(flowFirstStep)

@@ -5,25 +5,18 @@ import { ImageToText } from "src/utils/ImageToText";
 import { stringToExcel } from "src/utils/stringToExcel";
 import path from 'path'
 import fs from 'fs';
-import { flowConfirmStart } from "./confirmStart.flow";
 import { flowJustRead } from "./justRead.flow";
 
 
 
 
-const DURATION_MEET = process.env.DURATION_MEET ?? 45
-/**
- * Encargado de pedir los datos necesarios para registrar el evento en el calendario
- */
-const flowFirstStep = addKeyword(EVENTS.MEDIA).addAction(async (ctx, { flowDynamic, gotoFlow, endFlow, state }) => {
-    const number = ctx.from;
+const flowFirstStep = addKeyword(EVENTS.MEDIA).addAction(async (ctx, { flowDynamic, state }) => {
         await clearHistory(state)
         const m = '¡Okay! Muestrame la foto'
         await flowDynamic(m)
         handleHistory({ content: m, role: "assistant" }, state);
 
-}).addAction({ capture: true }, async (ctx, { provider, state, flowDynamic, endFlow, gotoFlow }) => {
-    const number = ctx.from;
+}).addAction({ capture: true }, async (ctx, { provider, state, flowDynamic,  gotoFlow }) => {
 
     if (ctx.body.toLocaleLowerCase().includes('cancelar') || ctx.body.toLocaleLowerCase().includes('apagar') || ctx.body.toLocaleLowerCase().includes('salir')) {
         await clearHistory(state)
