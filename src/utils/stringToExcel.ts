@@ -3,8 +3,12 @@ import xlsx from 'xlsx';
 import path from 'path';
 import { fileURLToPath } from 'url';
 
+interface ExcelFileDetails {
+  directory: string;
+  fileName: string;
+}
 
-async function stringToExcel(message: string): Promise<string | void> {
+async function stringToExcel(message: string): Promise<ExcelFileDetails | void> {
   try {
     // Crear un nuevo libro de trabajo
     const workbook = xlsx.utils.book_new();
@@ -40,11 +44,11 @@ async function stringToExcel(message: string): Promise<string | void> {
     // Escribir el archivo XLSX
     xlsx.writeFile(workbook, filePath);
     console.log(`Archivo ${fileName} creado exitosamente.`);
-    return fileName;
+    return { directory, fileName };
 
-  } catch (error) {
+  } catch (error: any) { // Especificar que el error es de tipo `any`
     console.error("stringToExcel: " + error.message);
   }
 }
 
-export { stringToExcel };
+export { stringToExcel, ExcelFileDetails };

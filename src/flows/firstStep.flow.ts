@@ -11,12 +11,12 @@ import { flowJustRead } from "./justRead.flow";
 
 
 const flowFirstStep = addKeyword(EVENTS.MEDIA).addAction(async (ctx, { flowDynamic, state }) => {
-        await clearHistory(state)
-        const m = '¡Okay! Muestrame la foto'
-        await flowDynamic(m)
-        handleHistory({ content: m, role: "assistant" }, state);
+    await clearHistory(state)
+    const m = '¡Okay! Muestrame la foto'
+    await flowDynamic(m)
+    handleHistory({ content: m, role: "assistant" }, state);
 
-}).addAction({ capture: true }, async (ctx, { provider, state, flowDynamic,  gotoFlow, fallBack }) => {
+}).addAction({ capture: true }, async (ctx, { provider, state, flowDynamic, gotoFlow, fallBack }) => {
 
     if (ctx.body.toLocaleLowerCase().includes('cancelar') || ctx.body.toLocaleLowerCase().includes('apagar') || ctx.body.toLocaleLowerCase().includes('salir')) {
         await clearHistory(state)
@@ -32,19 +32,23 @@ const flowFirstStep = addKeyword(EVENTS.MEDIA).addAction(async (ctx, { flowDynam
         const message = await ImageToText(imagePath);
 
 
-        const excelFileName = await stringToExcel(message) || 'boleta.xlsx';
+        const excelFile = await stringToExcel(message) || { directory: '', fileName: 'boleta.xlsx' };
+        const excelFileDirectory = excelFile.directory;
+        const excelFileName = excelFile.fileName;
+        //console.log(`Directorio del archivo Excel: ${excelFileDirectory}`);
+        //console.log(`Nombre del archivo Excel: ${excelFileName}`);
 
 
-        const excelPathLocal = path.join(process.cwd(), 'src/cache/excel', excelFileName);
-        //console.log("ruta del archivo excel: " +  excelPathLocal)
+        const excelPathLocal = path.join(excelFileDirectory, excelFileName);
+        console.log("ruta del archivo excel: " +  excelPathLocal)
 
         try {
 
-        await flowDynamic([{media: excelPathLocal}])
-        //eliminar el archivo excel
-        fs.unlinkSync(excelPathLocal);
-        //elimnar la imagen
-        fs.unlinkSync(imagePath);
+            await flowDynamic([{ media: excelPathLocal }])
+            //eliminar el archivo excel
+            fs.unlinkSync(excelPathLocal);
+            //elimnar la imagen
+            fs.unlinkSync(imagePath);
 
         } catch (error) {
             console.log("Error al enviar el archivo: " + error)
