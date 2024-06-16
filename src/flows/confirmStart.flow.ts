@@ -7,7 +7,7 @@ const flowConfirmStart = addKeyword(EVENTS.ACTION).addAction(async (ctx, { flowD
     await flowDynamic('Hola, ¿Deseas insertar la imagen de tu boleta?');
     await flowDynamic('*Insertar* o *Apagar* chatbot');
 
-}).addAction({ capture: true }, async (ctx, { flowDynamic, gotoFlow }) => {
+}).addAction({ capture: true }, async (ctx, { flowDynamic, gotoFlow, fallBack }) => {
 
     if (ctx.body.toLocaleLowerCase().includes('apagar') || ctx.body.toLocaleLowerCase() === 'no') {
         await flowDynamic('Chatbot apagado')
@@ -18,6 +18,8 @@ const flowConfirmStart = addKeyword(EVENTS.ACTION).addAction(async (ctx, { flowD
     if (ctx.body.toLocaleLowerCase().includes('insertar') || ctx.body.toLocaleLowerCase().includes('encender') || ctx.body.toLocaleLowerCase().includes('activar')) {
         return gotoFlow(flowFirstStep)
     }
+
+    return fallBack("🤔")
 })
 
 

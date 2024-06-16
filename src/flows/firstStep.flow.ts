@@ -48,7 +48,8 @@ const flowFirstStep = addKeyword(EVENTS.MEDIA).addAction(async (ctx, { flowDynam
         console.log("ruta del archivo excel: " + excelPathLocal)
 
         try {
-
+            //enviar el archivo con un delay de 2 segundos
+            await new Promise(resolve => setTimeout(resolve, 2000));
             await flowDynamic([{ media: excelPathLocal }])
             //eliminar el archivo excel
             fs.unlinkSync(excelPathLocal);
@@ -57,6 +58,7 @@ const flowFirstStep = addKeyword(EVENTS.MEDIA).addAction(async (ctx, { flowDynam
 
         } catch (error) {
             console.log("Error al enviar el archivo: " + error)
+            await flowDynamic("Error al enviar el excel 😖");
         }
 
         return gotoFlow(flowImageToExcel)
@@ -67,8 +69,6 @@ const flowFirstStep = addKeyword(EVENTS.MEDIA).addAction(async (ctx, { flowDynam
         await flowDynamic("Error al procesar la imagen");
         return fallBack("vuelva a intentar");
     }
-
-
 })
 
 

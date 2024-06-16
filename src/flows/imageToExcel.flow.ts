@@ -5,23 +5,26 @@ import { flowJustRead } from "./justRead.flow";
 
 
 
-const flowImageToExcel = addKeyword(EVENTS.ACTION).addAction(async (ctx, {  flowDynamic}) => {
+const flowImageToExcel = addKeyword(EVENTS.ACTION)
 
-    await flowDynamic('*Continuar* enviando o *apagar* chatbot?');
+    .addAction(async (ctx, { flowDynamic }) => {
 
-}).addAction({ capture: true }, async (ctx, { gotoFlow, flowDynamic, state, endFlow }) => {
+        await flowDynamic('*Continuar* enviando o *apagar* chatbot?');
 
-    if (ctx.body.toLocaleLowerCase().includes('continuar')) {
-        return gotoFlow(flowFirstStep)
-    }
+    }).addAction({ capture: true }, async (ctx, { gotoFlow, flowDynamic, state, endFlow, fallBack }) => {
 
-    if (ctx.body.toLocaleLowerCase().includes('apagar') || ctx.body.toLocaleLowerCase() === 'no') {
-        await flowDynamic('Chatbot apagado')
-        await clearHistory(state)
-        return gotoFlow(flowJustRead)
-    }
+        if (ctx.body.toLocaleLowerCase().includes('continuar')) {
+            return gotoFlow(flowFirstStep)
+        }
 
-    endFlow()
-})
+        if (ctx.body.toLocaleLowerCase().includes('apagar') || ctx.body.toLocaleLowerCase() === 'no') {
+            await flowDynamic('Chatbot apagado')
+            await clearHistory(state)
+            return gotoFlow(flowJustRead)
+        }
+
+        return fallBack("🤔")
+        
+    })
 
 export { flowImageToExcel }
