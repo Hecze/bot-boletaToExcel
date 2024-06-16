@@ -6,8 +6,7 @@ import { stringToExcel } from "src/utils/stringToExcel";
 import path from 'path'
 import fs from 'fs';
 import { flowJustRead } from "./justRead.flow";
-
-
+import { fileURLToPath } from 'url';
 
 
 const flowFirstStep = addKeyword(EVENTS.MEDIA).addAction(async (ctx, { flowDynamic, state }) => {
@@ -26,7 +25,13 @@ const flowFirstStep = addKeyword(EVENTS.MEDIA).addAction(async (ctx, { flowDynam
     }
     try {
         await flowDynamic("procesando...");
-        const localPath = await provider.saveFile(ctx, { path: './src/cache/boletas' });
+        // Obtener la ruta del directorio actual
+        const __filename = fileURLToPath(import.meta.url);
+        const __dirname = path.dirname(__filename);
+        // Especifica la ruta del directorio donde deseas guardar el archivo
+        const directory = path.resolve(__dirname, '../cache/boletas');
+
+        const localPath = await provider.saveFile(ctx, { path: directory });
         console.log("imagen guardada en:" + localPath)
         const imagePath = localPath;
         const message = await ImageToText(imagePath);
@@ -40,7 +45,7 @@ const flowFirstStep = addKeyword(EVENTS.MEDIA).addAction(async (ctx, { flowDynam
 
 
         const excelPathLocal = path.join(excelFileDirectory, excelFileName);
-        console.log("ruta del archivo excel: " +  excelPathLocal)
+        console.log("ruta del archivo excel: " + excelPathLocal)
 
         try {
 
