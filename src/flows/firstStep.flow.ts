@@ -17,7 +17,7 @@ const flowFirstStep = addKeyword(EVENTS.MEDIA).addAction(async (ctx, { flowDynam
 
 }).addAction({ capture: true }, async (ctx, { provider, state, flowDynamic, gotoFlow, fallBack }) => {
 
-    if (ctx.body.toLocaleLowerCase().includes('cancelar') || ctx.body.toLocaleLowerCase().includes('apagar') || ctx.body.toLocaleLowerCase().includes('salir')) {
+    if (ctx.body.toLocaleLowerCase().includes('cancelar') || ctx.body.toLocaleLowerCase().includes('apagar') || ctx.body.toLocaleLowerCase().includes('apagate')  || ctx.body.toLocaleLowerCase().includes('salir')) {
         await clearHistory(state)
         await flowDynamic("Chatbot desactivado");
         await flowDynamic('Escriba *Encender* cuando desea activar el chatbot nuevamente')

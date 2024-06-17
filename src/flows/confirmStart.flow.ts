@@ -9,7 +9,7 @@ const flowConfirmStart = addKeyword(EVENTS.ACTION).addAction(async (ctx, { flowD
 
 }).addAction({ capture: true }, async (ctx, { flowDynamic, gotoFlow, fallBack }) => {
 
-    if (ctx.body.toLocaleLowerCase().includes('apagar') || ctx.body.toLocaleLowerCase() === 'no') {
+    if (ctx.body.toLocaleLowerCase().includes('apagar') || ctx.body.toLocaleLowerCase().includes('apagate') || ctx.body.toLocaleLowerCase() === 'no') {
         await flowDynamic('Chatbot apagado')
         await flowDynamic('Escriba *Encender* cuando desea activar el chatbot nuevamente')
         return gotoFlow(flowJustRead)

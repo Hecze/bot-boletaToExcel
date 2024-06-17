@@ -11,13 +11,13 @@ const flowImageToExcel = addKeyword(EVENTS.ACTION)
 
         await flowDynamic('*Continuar* enviando o *apagar* chatbot?');
 
-    }).addAction({ capture: true }, async (ctx, { gotoFlow, flowDynamic, state, endFlow, fallBack }) => {
+    }).addAction({ capture: true }, async (ctx, { gotoFlow, flowDynamic, state, fallBack }) => {
 
         if (ctx.body.toLocaleLowerCase().includes('continuar')) {
             return gotoFlow(flowFirstStep)
         }
 
-        if (ctx.body.toLocaleLowerCase().includes('apagar') || ctx.body.toLocaleLowerCase() === 'no') {
+        if (ctx.body.toLocaleLowerCase().includes('apagar') || ctx.body.toLocaleLowerCase().includes('apagate') || ctx.body.toLocaleLowerCase() === 'no') {
             await flowDynamic('Chatbot apagado')
             await clearHistory(state)
             return gotoFlow(flowJustRead)
