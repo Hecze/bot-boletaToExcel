@@ -17,7 +17,7 @@ const flowFirstStep = addKeyword(EVENTS.MEDIA).addAction(async (ctx, { flowDynam
 
 }).addAction({ capture: true }, async (ctx, { provider, state, flowDynamic, gotoFlow, fallBack }) => {
 
-    if (ctx.body.toLocaleLowerCase().includes('cancelar') || ctx.body.toLocaleLowerCase().includes('apagar') || ctx.body.toLocaleLowerCase().includes('apagate')  || ctx.body.toLocaleLowerCase().includes('salir')) {
+    if (ctx.body.toLocaleLowerCase().includes('cancelar') || ctx.body.toLocaleLowerCase().includes('apagar') || ctx.body.toLocaleLowerCase().includes('apagate') || ctx.body.toLocaleLowerCase().includes('salir')) {
         await clearHistory(state)
         await flowDynamic("Chatbot desactivado");
         await flowDynamic('Escriba *Encender* cuando desea activar el chatbot nuevamente')
@@ -50,16 +50,31 @@ const flowFirstStep = addKeyword(EVENTS.MEDIA).addAction(async (ctx, { flowDynam
         try {
             //enviar el archivo con un delay de 2 segundos
             await new Promise(resolve => setTimeout(resolve, 2000));
-            await flowDynamic([{ media: excelPathLocal }])
+            await flowDynamic([{ body: 'Excel File', media: excelPathLocal }])
+            await provider.vendor.sendMessage(
+                ctx.key.remoteJid,
+                {
+                    document: {
+                        url: excelPathLocal
+                    },
+                    mimetype: 'application/xlsx',
+                    fileName: 'myfile.xlsx'
+                }
+            )
+
             //eliminar el archivo excel
             fs.unlinkSync(excelPathLocal);
             //elimnar la imagen
             fs.unlinkSync(imagePath);
 
+
+
         } catch (error) {
             console.log("Error al enviar el archivo: " + error)
             await flowDynamic("Error al enviar el excel 😖");
+
         }
+
 
         return gotoFlow(flowImageToExcel)
 

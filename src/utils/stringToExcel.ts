@@ -21,10 +21,13 @@ async function stringToExcel(message: string): Promise<ExcelFileDetails | void> 
 
     // Obtener la fecha actual en el formato deseado
     const now = new Date();
-    const formattedDate = now.toISOString().replace(/[-T:.Z]/g, '').slice(0, 15);
+    const formattedDate = formatDate(now); // Formatear la fecha
 
-    // Crear el nombre del archivo con la fecha actual
-    const fileName = `message_${formattedDate}.xlsx`;
+    // Generar un identificador único (timestamp en milisegundos)
+    const uniqueId = padNumber(now.getSeconds()) + padNumber(now.getMilliseconds());
+
+    // Crear el nombre del archivo con la fecha actual y un identificador único
+    const fileName = `texto extraido ${formattedDate} ${uniqueId}.xlsx`.replace(/[\\/:*?"<>|]/g, '-'); // Reemplazar caracteres inválidos
 
     // Obtener la ruta del directorio actual
     const __filename = fileURLToPath(import.meta.url);
@@ -39,16 +42,54 @@ async function stringToExcel(message: string): Promise<ExcelFileDetails | void> 
     }
 
     // Crear el nombre completo del archivo con la ruta
-    const filePath = path.join(directory, fileName);
+    const filePath = path.normalize(path.join(directory, fileName));
 
-    // Escribir el archivo XLSX
-    xlsx.writeFile(workbook, filePath);
-    console.log(`Archivo ${fileName} creado exitosamente.`);
-    return { directory, fileName };
+    // Verificar si el archivo ya existe antes de escribirlo
+    if (fs.existsSync(filePath)) {
+      console.log(`El archivo ${fileName} ya existe.`);
+      // Puedes manejar esto de acuerdo a tus necesidades (renombre, aviso al usuario, etc.)
+    } else {
+      // Escribir el archivo XLSX solo si no existe previamente
+      xlsx.writeFile(workbook, filePath);
+      console.log(`Archivo ${fileName} creado exitosamente.`);
+    }
 
-  } catch (error: any) { // Especificar que el error es de tipo `any`
+    // Retornar el objeto ExcelFileDetails
+    const excelFileDetails: ExcelFileDetails = {
+      directory: directory,
+      fileName: fileName
+    };
+    return excelFileDetails;
+
+  } catch (error: any) {
     console.error("stringToExcel: " + error.message);
   }
+}
+
+// Función para formatear la fecha como 'YYYY-MM-DD hh:mm:ss.SSS am/pm'
+function formatDate(date: Date): string {
+  const day = padNumber(date.getDate());
+  const month = padNumber(date.getMonth() + 1); // Los meses son de 0 a 11
+  const year = date.getFullYear();
+  let hours = date.getHours();
+  const minutes = padNumber(date.getMinutes());
+  const seconds = padNumber(date.getSeconds());
+  const milliseconds = padNumber(date.getMilliseconds());
+  let period = 'am';
+
+  if (hours >= 12) {
+    period = 'pm';
+    if (hours > 12) {
+      hours -= 12;
+    }
+  }
+
+  return `${year}-${month}-${day} ${padNumber(hours)}:${minutes}:${seconds}.${milliseconds} ${period}`;
+}
+
+// Función auxiliar para rellenar con ceros a la izquierda
+function padNumber(num: number): string {
+  return num.toString().padStart(2, '0');
 }
 
 export { stringToExcel, ExcelFileDetails };
