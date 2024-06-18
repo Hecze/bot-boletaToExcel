@@ -51,17 +51,6 @@ const flowFirstStep = addKeyword(EVENTS.MEDIA).addAction(async (ctx, { flowDynam
             //enviar el archivo con un delay de 2 segundos
             await new Promise(resolve => setTimeout(resolve, 2000));
             await flowDynamic([{ body: 'Excel File', media: excelPathLocal }])
-            await provider.vendor.sendMessage(
-                ctx.key.remoteJid,
-                {
-                    document: {
-                        url: excelPathLocal
-                    },
-                    mimetype: 'application/xlsx',
-                    fileName: 'myfile.xlsx'
-                }
-            )
-
             //eliminar el archivo excel
             fs.unlinkSync(excelPathLocal);
             //elimnar la imagen

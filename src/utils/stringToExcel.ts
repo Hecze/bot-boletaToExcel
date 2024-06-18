@@ -84,7 +84,7 @@ function formatDate(date: Date): string {
     }
   }
 
-  return `${year}-${month}-${day} ${padNumber(hours)}:${minutes}:${seconds}.${milliseconds} ${period}`;
+  return `${year}-${month}-${day} ${padNumber(hours)}:${minutes} ${period}`;
 }
 
 // Función auxiliar para rellenar con ceros a la izquierda
